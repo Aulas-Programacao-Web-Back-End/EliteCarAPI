@@ -1,20 +1,16 @@
 # ==========================================
-# Etapa 1 - Build
+# Build
 # ==========================================
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
 WORKDIR /src
 
-# Copia o arquivo do projeto
 COPY ["EliteCarAPI.csproj", "./"]
 
-# Restaura as dependências
 RUN dotnet restore "EliteCarAPI.csproj"
 
-# Copia o restante dos arquivos
 COPY . .
 
-# Compila e publica a aplicação
 RUN dotnet publish "EliteCarAPI.csproj" \
     -c Release \
     -o /app/publish \
@@ -22,21 +18,17 @@ RUN dotnet publish "EliteCarAPI.csproj" \
 
 
 # ==========================================
-# Etapa 2 - Runtime
+# Runtime
 # ==========================================
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
 WORKDIR /app
 
-# Copia a aplicação publicada
 COPY --from=build /app/publish .
 
-# Faz o ASP.NET Core escutar na porta
-# fornecida pelo Render
-ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
+# Render utiliza a porta 10000 por padrão
+ENV ASPNETCORE_HTTP_PORTS=10000
 
-# Porta utilizada pelo container
 EXPOSE 10000
 
-# Inicia a aplicação
 ENTRYPOINT ["dotnet", "EliteCarAPI.dll"]
