@@ -2,6 +2,7 @@ using EliteCarAPI.Data;
 using EliteCarAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,24 @@ builder.Services.AddScoped<PedidoVendaService>();
 // Controllers + validação automática via DataAnnotations
 // ──────────────────────────────────────────────────────────
 builder.Services.AddControllers();
+
+// ──────────────────────────────────────────────────────────
+// CORS e Headers de Proxy (Render usa HTTPS na ponta e HTTP internamente)
+// ──────────────────────────────────────────────────────────
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 // ──────────────────────────────────────────────────────────
 // OpenAPI — geração do documento JSON (built-in .NET 10)
@@ -61,6 +80,12 @@ builder.Services.AddOpenApi(options =>
 });
 
 var app = builder.Build();
+
+// Aplica os headers passados pelo proxy do Render (corrige scheme http para https)
+app.UseForwardedHeaders();
+
+// Aplica a política de CORS
+app.UseCors("AllowAll");
 
 // ──────────────────────────────────────────────────────────
 // Swagger UI — habilitado em todos os ambientes
