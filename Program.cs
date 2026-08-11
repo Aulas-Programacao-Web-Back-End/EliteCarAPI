@@ -81,6 +81,9 @@ builder.Services.AddOpenApi(options =>
 
 var app = builder.Build();
 
+// TEMPORÁRIO: Habilita o detalhe do erro 500 na resposta para debug
+app.UseDeveloperExceptionPage();
+
 // Aplica os headers passados pelo proxy do Render (corrige scheme http para https)
 app.UseForwardedHeaders();
 
