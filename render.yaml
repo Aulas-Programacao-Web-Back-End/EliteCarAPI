@@ -18,7 +18,7 @@ services:
     runtime: docker           # usa o Dockerfile da raiz do projeto
     region: ohio              # us-east-ohio (mais próximo do Brasil)
     plan: free                # plano gratuito do Render
-    branch: master            # branch do GitHub a monitorar
+    branch: prod              # branch do GitHub a monitorar
 
     # Variáveis de ambiente injetadas no container
     envVars:
