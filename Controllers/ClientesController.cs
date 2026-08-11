@@ -33,6 +33,20 @@ public class ClientesController(ClienteService clienteService) : ControllerBase
         return Ok(cliente);
     }
 
+    // GET api/clientes/{id}
+    // Buscar cliente por ID
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ClienteResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var cliente = await clienteService.BuscarPorIdAsync(id);
+        if (cliente is null)
+            return NotFound(new { mensagem = $"Nenhum cliente ativo encontrado com o ID {id}." });
+
+        return Ok(cliente);
+    }
+
     // POST api/clientes
     // RF01 — Cadastrar cliente
     [HttpPost]

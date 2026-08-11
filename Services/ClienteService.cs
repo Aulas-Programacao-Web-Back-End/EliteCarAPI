@@ -30,6 +30,17 @@ public class ClienteService(AppDbContext context)
     }
 
     // ──────────────────────────────────────────────────────────
+    // Buscar cliente ativo por ID
+    // ──────────────────────────────────────────────────────────
+    public async Task<ClienteResponseDTO?> BuscarPorIdAsync(int id)
+    {
+        var cliente = await context.Clientes
+            .FirstOrDefaultAsync(c => c.IdCliente == id && c.Ativo);
+
+        return cliente is null ? null : ToResponseDTO(cliente);
+    }
+
+    // ──────────────────────────────────────────────────────────
     // RF01 / RN01.1, RN01.2 — Criar cliente
     // ──────────────────────────────────────────────────────────
     public async Task<(ClienteResponseDTO? Response, string? Erro)> CriarAsync(ClienteCreateDTO dto)

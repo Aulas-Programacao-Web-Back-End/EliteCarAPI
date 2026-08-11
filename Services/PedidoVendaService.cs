@@ -36,6 +36,20 @@ public class PedidoVendaService(AppDbContext context)
     }
 
     // ──────────────────────────────────────────────────────────
+    // Consultar venda por ID
+    // ──────────────────────────────────────────────────────────
+    public async Task<PedidoVendaResponseDTO?> BuscarPorIdAsync(int id)
+    {
+        var pedido = await context.PedidosVenda
+            .Where(p => p.Ativo && p.IdPedido == id)
+            .Include(p => p.Cliente)
+            .Include(p => p.Carro)
+            .FirstOrDefaultAsync();
+
+        return pedido is null ? null : ToResponseDTO(pedido);
+    }
+
+    // ──────────────────────────────────────────────────────────
     // RF11 / RN11.1–RN11.6 — Criar venda
     // ──────────────────────────────────────────────────────────
     public async Task<(PedidoVendaResponseDTO? Response, string? Erro)> CriarAsync(PedidoVendaCreateDTO dto)

@@ -33,6 +33,20 @@ public class PedidosVendaController(PedidoVendaService pedidoVendaService) : Con
         return Ok(pedidos);
     }
 
+    // GET api/pedidosvenda/{id}
+    // Consultar venda por ID
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(PedidoVendaResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var pedido = await pedidoVendaService.BuscarPorIdAsync(id);
+        if (pedido is null)
+            return NotFound(new { mensagem = $"Nenhuma venda ativa encontrada com o ID {id}." });
+
+        return Ok(pedido);
+    }
+
     // POST api/pedidosvenda
     // RF11 — Cadastrar venda
     [HttpPost]

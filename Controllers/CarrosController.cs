@@ -33,6 +33,20 @@ public class CarrosController(CarroService carroService) : ControllerBase
         return Ok(carro);
     }
 
+    // GET api/carros/{id}
+    // Buscar veículo por ID
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(CarroResponseDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var carro = await carroService.BuscarPorIdAsync(id);
+        if (carro is null)
+            return NotFound(new { mensagem = $"Nenhum veículo ativo encontrado com o ID {id}." });
+
+        return Ok(carro);
+    }
+
     // POST api/carros
     // RF06 — Cadastrar veículo
     [HttpPost]

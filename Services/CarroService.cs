@@ -30,6 +30,17 @@ public class CarroService(AppDbContext context)
     }
 
     // ──────────────────────────────────────────────────────────
+    // Buscar veículo ativo por ID
+    // ──────────────────────────────────────────────────────────
+    public async Task<CarroResponseDTO?> BuscarPorIdAsync(int id)
+    {
+        var carro = await context.Carros
+            .FirstOrDefaultAsync(c => c.IdCarro == id && c.Ativo);
+
+        return carro is null ? null : ToResponseDTO(carro);
+    }
+
+    // ──────────────────────────────────────────────────────────
     // RF06 / RN06.1, RN06.2 — Criar veículo
     // ──────────────────────────────────────────────────────────
     public async Task<(CarroResponseDTO? Response, string? Erro)> CriarAsync(CarroCreateDTO dto)
