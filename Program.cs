@@ -63,24 +63,23 @@ builder.Services.AddOpenApi(options =>
 var app = builder.Build();
 
 // ──────────────────────────────────────────────────────────
-// Swagger UI — disponível apenas em Development
-// Acesse: https://localhost:{porta}/swagger
+// Swagger UI — habilitado em todos os ambientes
+// • Desenvolvimento : https://localhost:{porta}/swagger
+// • Produção (Render): https://elitecar-api.onrender.com/swagger
 // ──────────────────────────────────────────────────────────
-if (app.Environment.IsDevelopment())
-{
-    // Gera o documento em /openapi/v1.json
-    app.MapOpenApi();
 
-    // Swagger UI aponta para o documento gerado acima
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/openapi/v1.json", "EliteCar API v1");
-        c.RoutePrefix          = "swagger";
-        c.DocumentTitle        = "EliteCar API — Swagger UI";
-        c.DefaultModelsExpandDepth(1);
-        c.DisplayRequestDuration();
-    });
-}
+// Gera o documento em /openapi/v1.json
+app.MapOpenApi();
+
+// Swagger UI aponta para o documento gerado acima
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/openapi/v1.json", "EliteCar API v1");
+    c.RoutePrefix          = "swagger";
+    c.DocumentTitle        = "EliteCar API — Swagger UI";
+    c.DefaultModelsExpandDepth(1);
+    c.DisplayRequestDuration();
+});
 
 //app.UseHttpsRedirection();
 

@@ -1,0 +1,38 @@
+# =============================================================
+# Render Blueprint — EliteCar API
+# Documentação: https://render.com/docs/blueprint-spec
+#
+# Como usar:
+#   1. Faça push deste repositório para o GitHub
+#   2. Em render.com → New → Blueprint
+#   3. Conecte o repositório — o Render lerá este arquivo
+#      e criará o serviço automaticamente
+#   4. Após criar, adicione a variável de ambiente
+#      ConnectionStrings__DefaultConnection com a connection
+#      string do Supabase no painel do Render
+# =============================================================
+
+services:
+  - type: web
+    name: elitecar-api
+    runtime: docker           # usa o Dockerfile da raiz do projeto
+    region: ohio              # us-east-ohio (mais próximo do Brasil)
+    plan: free                # plano gratuito do Render
+    branch: master            # branch do GitHub a monitorar
+
+    # Variáveis de ambiente injetadas no container
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+      # ⚠️  OBRIGATÓRIO — Preencha no painel do Render após criar o serviço:
+      #     Dashboard → elitecar-api → Environment → Add Environment Variable
+      #
+      #     Chave  : ConnectionStrings__DefaultConnection
+      #     Valor  : Host=db.XXXXX.supabase.co;Port=5432;Database=postgres;
+      #              Username=postgres;Password=SUA_SENHA
+      #
+      # O "__" é a forma do ASP.NET Core mapear seções aninhadas do appsettings
+      # via variáveis de ambiente (ConnectionStrings → DefaultConnection)
+      - key: ConnectionStrings__DefaultConnection
+        sync: false           # Render não exibe o valor no painel (seguro)
